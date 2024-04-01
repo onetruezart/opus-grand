@@ -92,7 +92,7 @@ int bitexact_log2tan(int isin,int icos)
 
 #ifdef FIXED_POINT
 /* Compute the amplitude (sqrt energy) in each of the bands */
-void compute_band_energies(const CELTMode *m, const celt_sig *X, celt_ener *bandE, int end, int C, int LM, int arch)
+void compute_band_energies_nn(const CELTMode *m, const celt_sig *X, celt_ener *bandE, int end, int C, int LM, int arch)
 {
    int i, c, N;
    const opus_int16 *eBands = m->eBands;
@@ -134,7 +134,7 @@ void compute_band_energies(const CELTMode *m, const celt_sig *X, celt_ener *band
 }
 
 /* Normalise each band such that the energy is one. */
-void normalise_bands(const CELTMode *m, const celt_sig * OPUS_RESTRICT freq, celt_norm * OPUS_RESTRICT X, const celt_ener *bandE, int end, int C, int M)
+void normalise_bands_nn(const CELTMode *m, const celt_sig * OPUS_RESTRICT freq, celt_norm * OPUS_RESTRICT X, const celt_ener *bandE, int end, int C, int M)
 {
    int i, c, N;
    const opus_int16 *eBands = m->eBands;
@@ -156,7 +156,7 @@ void normalise_bands(const CELTMode *m, const celt_sig * OPUS_RESTRICT freq, cel
 
 #else /* FIXED_POINT */
 /* Compute the amplitude (sqrt energy) in each of the bands */
-void compute_band_energies(const CELTMode *m, const celt_sig *X, celt_ener *bandE, int end, int C, int LM, int arch)
+void compute_band_energies_nn(const CELTMode *m, const celt_sig *X, celt_ener *bandE, int end, int C, int LM, int arch)
 {
    int i, c, N;
    const opus_int16 *eBands = m->eBands;
@@ -174,7 +174,7 @@ void compute_band_energies(const CELTMode *m, const celt_sig *X, celt_ener *band
 }
 
 /* Normalise each band such that the energy is one. */
-void normalise_bands(const CELTMode *m, const celt_sig * OPUS_RESTRICT freq, celt_norm * OPUS_RESTRICT X, const celt_ener *bandE, int end, int C, int M)
+void normalise_bands_nn(const CELTMode *m, const celt_sig * OPUS_RESTRICT freq, celt_norm * OPUS_RESTRICT X, const celt_ener *bandE, int end, int C, int M)
 {
    int i, c, N;
    const opus_int16 *eBands = m->eBands;
@@ -193,7 +193,7 @@ void normalise_bands(const CELTMode *m, const celt_sig * OPUS_RESTRICT freq, cel
 #endif /* FIXED_POINT */
 
 /* De-normalise the energy to produce the synthesis from the unit-energy bands */
-void denormalise_bands(const CELTMode *m, const celt_norm * OPUS_RESTRICT X,
+void denormalise_bands_nn(const CELTMode *m, const celt_norm * OPUS_RESTRICT X,
       celt_sig * OPUS_RESTRICT freq, const opus_val16 *bandLogE, int start,
       int end, int M, int downsample, int silence)
 {
@@ -1395,7 +1395,7 @@ static void special_hybrid_folding(const CELTMode *m, celt_norm *norm, celt_norm
 }
 #endif
 
-void quant_all_bands(int encode, const CELTMode *m, int start, int end,
+void quant_all_bands_nn(int encode, const CELTMode *m, int start, int end,
       celt_norm *X_, celt_norm *Y_, unsigned char *collapse_masks,
       const celt_ener *bandE, int *pulses, int shortBlocks, int spread,
       int dual_stereo, int intensity, int *tf_res, opus_int32 total_bits,

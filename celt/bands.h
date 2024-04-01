@@ -44,7 +44,7 @@ int bitexact_log2tan(int isin,int icos);
  * @param X Spectrum
  * @param bandE Square root of the energy for each band (returned)
  */
-void compute_band_energies(const CELTMode *m, const celt_sig *X, celt_ener *bandE, int end, int C, int LM, int arch);
+void compute_band_energies_nn(const CELTMode *m, const celt_sig *X, celt_ener *bandE, int end, int C, int LM, int arch);
 
 /*void compute_noise_energies(const CELTMode *m, const celt_sig *X, const opus_val16 *tonality, celt_ener *bandE);*/
 
@@ -54,14 +54,14 @@ void compute_band_energies(const CELTMode *m, const celt_sig *X, celt_ener *band
  * @param X Spectrum (returned normalised)
  * @param bandE Square root of the energy for each band
  */
-void normalise_bands(const CELTMode *m, const celt_sig * OPUS_RESTRICT freq, celt_norm * OPUS_RESTRICT X, const celt_ener *bandE, int end, int C, int M);
+void normalise_bands_nn(const CELTMode *m, const celt_sig * OPUS_RESTRICT freq, celt_norm * OPUS_RESTRICT X, const celt_ener *bandE, int end, int C, int M);
 
 /** Denormalise each band of X to restore full amplitude
  * @param m Mode data
  * @param X Spectrum (returned de-normalised)
  * @param bandE Square root of the energy for each band
  */
-void denormalise_bands(const CELTMode *m, const celt_norm * OPUS_RESTRICT X,
+void denormalise_bands_nn(const CELTMode *m, const celt_norm * OPUS_RESTRICT X,
       celt_sig * OPUS_RESTRICT freq, const opus_val16 *bandE, int start,
       int end, int M, int downsample, int silence);
 
@@ -103,7 +103,7 @@ void haar1(celt_norm *X, int N0, int stride);
  * @param seed Random generator seed
  * @param arch Run-time architecture (see opus_select_arch())
  */
-void quant_all_bands(int encode, const CELTMode *m, int start, int end,
+void quant_all_bands_nn(int encode, const CELTMode *m, int start, int end,
       celt_norm * X, celt_norm * Y, unsigned char *collapse_masks,
       const celt_ener *bandE, int *pulses, int shortBlocks, int spread,
       int dual_stereo, int intensity, int *tf_res, opus_int32 total_bits,

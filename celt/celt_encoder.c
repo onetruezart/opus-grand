@@ -1743,7 +1743,7 @@ int celt_encode_with_ec(CELTEncoder * OPUS_RESTRICT st, const opus_val16 * pcm, 
    if (secondMdct)
    {
       compute_mdcts(mode, 0, in, freq, C, CC, LM, st->upsample, st->arch);
-      compute_band_energies(mode, freq, bandE, effEnd, C, LM, st->arch);
+       compute_band_energies_nn(mode, freq, bandE, effEnd, C, LM, st->arch);
       amp2Log2(mode, effEnd, end, bandE, bandLogE2, C);
       for (c=0;c<C;c++)
       {
@@ -1758,7 +1758,7 @@ int celt_encode_with_ec(CELTEncoder * OPUS_RESTRICT st, const opus_val16 * pcm, 
    celt_assert(!celt_isnan(freq[0]) && (C==1 || !celt_isnan(freq[N])));
    if (CC==2&&C==1)
       tf_chan = 0;
-   compute_band_energies(mode, freq, bandE, effEnd, C, LM, st->arch);
+    compute_band_energies_nn(mode, freq, bandE, effEnd, C, LM, st->arch);
 
    if (st->lfe)
    {
@@ -1882,7 +1882,7 @@ int celt_encode_with_ec(CELTEncoder * OPUS_RESTRICT st, const opus_val16 * pcm, 
          isTransient = 1;
          shortBlocks = M;
          compute_mdcts(mode, shortBlocks, in, freq, C, CC, LM, st->upsample, st->arch);
-         compute_band_energies(mode, freq, bandE, effEnd, C, LM, st->arch);
+          compute_band_energies_nn(mode, freq, bandE, effEnd, C, LM, st->arch);
          amp2Log2(mode, effEnd, end, bandE, bandLogE, C);
          /* Compensate for the scaling of short vs long mdcts */
          for (c=0;c<C;c++)
@@ -1900,7 +1900,7 @@ int celt_encode_with_ec(CELTEncoder * OPUS_RESTRICT st, const opus_val16 * pcm, 
    ALLOC(X, C*N, celt_norm);         /**< Interleaved normalised MDCTs */
 
    /* Band normalisation */
-   normalise_bands(mode, freq, X, bandE, effEnd, C, M);
+    normalise_bands_nn(mode, freq, X, bandE, effEnd, C, M);
 
    enable_tf_analysis = effectiveBytes>=15*C && !hybrid && st->complexity>=2 && !st->lfe;
 
@@ -2223,7 +2223,7 @@ int celt_encode_with_ec(CELTEncoder * OPUS_RESTRICT st, const opus_val16 * pcm, 
 #endif
    if (st->lfe)
       signalBandwidth = 1;
-   codedBands = clt_compute_allocation(mode, start, end, offsets, cap,
+   codedBands = clt_compute_allocation_nn(mode, start, end, offsets, cap,
          alloc_trim, &st->intensity, &dual_stereo, bits, &balance, pulses,
          fine_quant, fine_priority, C, LM, enc, 1, st->lastCodedBands, signalBandwidth);
    if (st->lastCodedBands)
@@ -2235,7 +2235,7 @@ int celt_encode_with_ec(CELTEncoder * OPUS_RESTRICT st, const opus_val16 * pcm, 
 
    /* Residual quantisation */
    ALLOC(collapse_masks, C*nbEBands, unsigned char);
-   quant_all_bands(1, mode, start, end, X, C==2 ? X+N : NULL, collapse_masks,
+    quant_all_bands_nn(1, mode, start, end, X, C==2 ? X+N : NULL, collapse_masks,
          bandE, pulses, shortBlocks, st->spread_decision,
          dual_stereo, st->intensity, tf_res, nbCompressedBytes*(8<<BITRES)-anti_collapse_rsv,
          balance, enc, LM, codedBands, &st->rng, st->complexity, st->arch, st->disable_inv);
@@ -2283,7 +2283,7 @@ int celt_encode_with_ec(CELTEncoder * OPUS_RESTRICT st, const opus_val16 * pcm, 
          out_mem[c] = st->syn_mem[c]+2*MAX_PERIOD-N;
       } while (++c<CC);
 
-      celt_synthesis(mode, X, out_mem, oldBandE, start, effEnd,
+       celt_synthesis_nn(mode, X, out_mem, oldBandE, start, effEnd,
                      C, CC, isTransient, LM, st->upsample, silence, st->arch);
 
       c=0; do {
